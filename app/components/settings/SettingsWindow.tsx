@@ -24,14 +24,16 @@ type TabType = 'data' | 'providers' | 'features' | 'debug' | 'event-logs' | 'con
 export const SettingsWindow = ({ open, onClose }: SettingsProps) => {
   const { debug, eventLogs } = useSettings();
   const [activeTab, setActiveTab] = useState<TabType>('data');
+  const [apiUrls, setApiUrls] = useState<string[]>([]);
 
   const tabs: { id: TabType; label: string; icon: string; component?: ReactElement }[] = [
     { id: 'data', label: 'Data', icon: 'i-ph:database', component: <DataTab /> },
     { id: 'providers', label: 'Providers', icon: 'i-ph:key', component: <ProvidersTab /> },
     { id: 'connection', label: 'Connection', icon: 'i-ph:link', component: <ConnectionsTab /> },
-    { id: 'external-api', label: 'UDS API', icon: 'i-ph:link', component: <ExternalApiSettings apiUrl={''} setApiUrl={function (url: string): void {
-      throw new Error('Function not implemented.');
-    } } /> }, // 添加新的 Tab
+    { id: 'external-api', label: 'UDS API', icon: 'i-ph:link', component: <ExternalApiSettings apiUrls={apiUrls} setApiUrls={setApiUrls} /> },
+    { id: 'features', label: 'Features', icon: 'i-ph:gear', component: <FeaturesTab /> },
+    { id: 'debug', label: 'Debug', icon: 'i-ph:bug', component: <DebugTab debug={debug} /> },
+    { id: 'event-logs', label: 'Event Logs', icon: 'i-ph:list', component: <EventLogsTab eventLogs={eventLogs} /> },
   ];
 
   return (
@@ -95,6 +97,7 @@ export const SettingsWindow = ({ open, onClose }: SettingsProps) => {
                   </a>
                 </div>
               </div>
+
               <div className="flex-1 flex flex-col p-8 pt-10 bg-bolt-elements-background-depth-2">
                 <div className="flex-1 overflow-y-auto">{tabs.find((tab) => tab.id === activeTab)?.component}</div>
               </div>

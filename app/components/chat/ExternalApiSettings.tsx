@@ -4,10 +4,10 @@ import { IconButton } from '~/components/ui/IconButton';
 
 interface ExternalApiSettingsProps {
   apiUrls: string[];
-  setApiUrls?: (urls: string[]) => void; // 将 setApiUrls 设置为可选属性
+  setApiUrls: (urls: string[]) => void;
 }
 
-export const ExternalApiSettings: React.FC<ExternalApiSettingsProps> = ({ apiUrls, setApiUrls = () => {} }) => {
+export const ExternalApiSettings: React.FC<ExternalApiSettingsProps> = ({ apiUrls, setApiUrls }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [tempUrls, setTempUrls] = useState(apiUrls || []);
 
@@ -43,6 +43,14 @@ export const ExternalApiSettings: React.FC<ExternalApiSettingsProps> = ({ apiUrl
   const handleDeleteUrl = (index: number) => {
     const newUrls = tempUrls.filter((_, i) => i !== index);
     setTempUrls(newUrls);
+
+    // Delete from cookies
+    const updatedUrls = Cookies.get('externalApiUrls');
+    if (updatedUrls) {
+      const parsedUrls = JSON.parse(updatedUrls);
+      parsedUrls.splice(index, 1);
+      Cookies.set('externalApiUrls', JSON.stringify(parsedUrls));
+    }
   };
 
   const handleSaveUrl = (index: number, value: string) => {
@@ -73,7 +81,7 @@ export const ExternalApiSettings: React.FC<ExternalApiSettingsProps> = ({ apiUrl
               value={url}
               placeholder="Enter API URL"
               onChange={(e) => handleUrlChange(index, e.target.value)}
-              className="w-[300px] px-3 py-1.5 text-sm rounded border border-bolt-elements-borderColor 
+              className="w-[600px] px-3 py-1.5 text-sm rounded border border-bolt-elements-borderColor 
                         bg-bolt-elements-prompt-background text-bolt-elements-textPrimary 
                         focus:outline-none focus:ring-2 focus:ring-bolt-elements-focus"
             />
