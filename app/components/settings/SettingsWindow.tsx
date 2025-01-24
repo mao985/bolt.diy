@@ -12,13 +12,14 @@ import DebugTab from './debug/DebugTab';
 import EventLogsTab from './event-logs/EventLogsTab';
 import ConnectionsTab from './connections/ConnectionsTab';
 import DataTab from './data/DataTab';
+import ExternalApiSettings from '~/components/chat/ExternalApiSettings';
 
 interface SettingsProps {
   open: boolean;
   onClose: () => void;
 }
 
-type TabType = 'data' | 'providers' | 'features' | 'debug' | 'event-logs' | 'connection';
+type TabType = 'data' | 'providers' | 'features' | 'debug' | 'event-logs' | 'connection' | 'external-api'; // 添加新的 Tab 类型
 
 export const SettingsWindow = ({ open, onClose }: SettingsProps) => {
   const { debug, eventLogs } = useSettings();
@@ -28,27 +29,7 @@ export const SettingsWindow = ({ open, onClose }: SettingsProps) => {
     { id: 'data', label: 'Data', icon: 'i-ph:database', component: <DataTab /> },
     { id: 'providers', label: 'Providers', icon: 'i-ph:key', component: <ProvidersTab /> },
     { id: 'connection', label: 'Connection', icon: 'i-ph:link', component: <ConnectionsTab /> },
-    { id: 'features', label: 'Features', icon: 'i-ph:star', component: <FeaturesTab /> },
-    ...(debug
-      ? [
-          {
-            id: 'debug' as TabType,
-            label: 'Debug Tab',
-            icon: 'i-ph:bug',
-            component: <DebugTab />,
-          },
-        ]
-      : []),
-    ...(eventLogs
-      ? [
-          {
-            id: 'event-logs' as TabType,
-            label: 'Event Logs',
-            icon: 'i-ph:list-bullets',
-            component: <EventLogsTab />,
-          },
-        ]
-      : []),
+    { id: 'external-api', label: 'External API', icon: 'i-ph:link', component: <ExternalApiSettings /> }, // 添加新的 Tab
   ];
 
   return (
