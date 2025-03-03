@@ -4,12 +4,12 @@ import type { IProviderSetting } from '~/types/model';
 import type { LanguageModelV1 } from 'ai';
 
 export default class SiniconflowProvider extends BaseProvider {
-  name = 'Siliconflow';
+  name = 'Siniconflow';
   getApiKeyLink = undefined;
 
   config = {
-    baseUrlKey: 'https://api.siliconflow.cn/v1',
-    apiTokenKey: 'sk-giidthxdcsjwvyzirtlweiyxxbgrperrweyzgjngtkejpita',
+    baseUrlKey: 'Siniconflow_API_BASE_URL',
+    apiTokenKey: 'Siniconflow_API_KEY',
   };
 
   staticModels: ModelInfo[] = [];
@@ -19,24 +19,19 @@ export default class SiniconflowProvider extends BaseProvider {
     settings?: IProviderSetting,
     serverEnv: Record<string, string> = {},
   ): Promise<ModelInfo[]> {
-    console.log('apiKeys:', apiKeys);
-    console.log('providerSettings:', settings);
-    console.log('serverEnv:', serverEnv);
     const { baseUrl, apiKey } = this.getProviderBaseUrlAndKey({
       apiKeys,
       providerSettings: settings,
       serverEnv,
-      defaultBaseUrlKey: 'https://api.siliconflow.cn/v1',
-      defaultApiTokenKey: 'sk-giidthxdcsjwvyzirtlweiyxxbgrperrweyzgjngtkejpita',
+      defaultBaseUrlKey: 'Siniconflow_API_BASE_URL',
+      defaultApiTokenKey: 'Siniconflow_API_KEY',
     });
 
+    if (!baseUrl || !apiKey) {
+      return [];
+    }
 
-
-    // if (!baseUrl || !apiKey) {
-    //   return [];
-    // }
-
-    const response = await fetch(`https://api.siliconflow.cn/v1/models`, {
+    const response = await fetch(`${baseUrl}/models`, {
       headers: {
         Authorization: `Bearer ${apiKey}`,
       },
@@ -64,12 +59,14 @@ export default class SiniconflowProvider extends BaseProvider {
       apiKeys,
       providerSettings: providerSettings?.[this.name],
       serverEnv: serverEnv as any,
-      defaultBaseUrlKey: 'https://api.siliconflow.cn/v1',
-      defaultApiTokenKey: 'sk-giidthxdcsjwvyzirtlweiyxxbgrperrweyzgjngtkejpita',
+      defaultBaseUrlKey: 'Siniconflow_API_BASE_URL',
+      defaultApiTokenKey: 'Siniconflow_API_KEY',
     });
 
+    if (!baseUrl || !apiKey) {
+      throw new Error(`Missing configuration for ${this.name} provider`);
+    }
 
-
-    return getOpenAILikeModel('https://api.siliconflow.cn/v1', apiKey, model);
+    return getOpenAILikeModel(baseUrl, apiKey, model);
   }
 }
